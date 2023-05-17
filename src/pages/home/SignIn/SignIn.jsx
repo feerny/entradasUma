@@ -11,21 +11,19 @@ import Box from "@mui/material/Box";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
 
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#3f51b5",
-    },
-    secondary: {
-      main: "#f50057",
-    },
-  },
-});
 
 export default function SignIn(props) {
+  let navigate = useNavigate();
   const [dataSesion, setdataSesion] = useState({
     email: "",
     password: "",
@@ -38,7 +36,21 @@ export default function SignIn(props) {
     console.log(dataSesion);
     if (dataSesion.email === process.env.REACT_APP_EMAIL) {
       if (dataSesion.password === process.env.REACT_APP_PASSWORD) {
-        console.log("inicio de sesion correcto");
+        if (dataSesion.chek === "remember") {
+          props.setislogin(true);
+          localStorage.setItem(
+            "userValiSesion",
+            `${process.env.REACT_APP_LOGINVALIDATION}`
+          );
+          setTimeout(() => navigate("home"), 200);
+        } else if (dataSesion.chek === "not remenber") {
+          props.setislogin(true);
+          sessionStorage.setItem(
+            "userValiSesion",
+            `${process.env.REACT_APP_LOGINVALIDATION}`
+          );
+          setTimeout(() => navigate("home"), 200);
+        }
       } else {
         setmessageError({
           email: messageError.email,
@@ -52,9 +64,14 @@ export default function SignIn(props) {
       });
     }
   };
+  const [showPassword, setShowPassword] = useState(false);
 
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
   return (
-    <ThemeProvider theme={theme}>
+
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -93,9 +110,8 @@ export default function SignIn(props) {
               autoComplete="email"
               autoFocus
             />
-            <TextField
+            <FormControl
               error={messageError.password !== "" ? true : false}
-              helperText={messageError.password}
               onChange={(e) => {
                 setdataSesion({
                   email: dataSesion.email,
@@ -104,15 +120,33 @@ export default function SignIn(props) {
                 });
                 setmessageError({ email: messageError.email, password: "" });
               }}
-              margin="normal"
+              sx={{ mt: 1 }}
               required
               fullWidth
-              name="password"
-              label="Contraseña"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
+              variant="outlined"
+            >
+              <InputLabel htmlFor="outlined-adornment-password">
+                Password
+              </InputLabel>
+              <OutlinedInput
+                id="outlined-adornment-password"
+                margin="normal"
+                type={showPassword ? "text" : "password"}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                label="Password"
+              />
+            </FormControl>
             <FormControlLabel
               control={
                 <Checkbox
@@ -148,6 +182,6 @@ export default function SignIn(props) {
         </Box>
         <props.Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
-    </ThemeProvider>
+
   );
 }

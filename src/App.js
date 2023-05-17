@@ -1,10 +1,24 @@
 import './App.css';
 import SignIn from './pages/home/SignIn/SignIn';
-import { Navigate , Route, Routes, BrowserRouter } from 'react-router-dom';
+import { Navigate, Route, Routes, BrowserRouter } from 'react-router-dom';
 import NotFound from './pages/notFound/NotFound';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
+import Home from './pages/home/Home';
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#3f51b5",
+    },
+    secondary: {
+      main: "#f50057",
+    },
+  },
+});
 
 function Copyright(props) {
   return (
@@ -24,18 +38,29 @@ function Copyright(props) {
   );
 }
 function App() {
-  
+  //guarda la sesion
   const [islogin, setislogin] = useState(false)
+  //carga la sesion si se encuentra guardada
+  useEffect(() => {
+    if (localStorage.getItem("userValiSesion") === process.env.REACT_APP_LOGINVALIDATION || sessionStorage.getItem("userValiSesion") === process.env.REACT_APP_LOGINVALIDATION) {
+      setislogin(true)
+    }
+  }, [])
+
+
   return (
     <div className="App">
+      <ThemeProvider theme={theme}>
       <BrowserRouter>
         <Routes>
-          <Route exact path="/" element={<SignIn Copyright={Copyright} />} />
+          <Route exact path="/" element={islogin === true ? <Navigate to="/home" /> : <SignIn setislogin={setislogin} Copyright={Copyright} />} />
+          <Route exact path="/home" element={islogin === true ? <Home Copyright={Copyright} /> : <Navigate to="/" />} />
           <Route exact path="/notFound" element={<NotFound />} />
           <Route path="*" element={<Navigate to="/notFound" />} />
-      </Routes>
+        </Routes>
       </BrowserRouter>
-    </div>
+    </ThemeProvider>
+    </div >
   );
 }
 
