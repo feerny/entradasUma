@@ -54,7 +54,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route exact path="/" element={islogin === true ? <Navigate to="/home" /> : <SignIn setislogin={setislogin} Copyright={Copyright} />} />
-          <Route exact path="/home" element={islogin === true ? <Home Copyright={Copyright} /> : <Navigate to="/" />} />
+          <Route exact path="/home" element={islogin === true ? <Home setislogin={setislogin} Copyright={Copyright} /> : <Navigate to="/" />} />
           <Route exact path="/notFound" element={<NotFound />} />
           <Route path="*" element={<Navigate to="/notFound" />} />
         </Routes>

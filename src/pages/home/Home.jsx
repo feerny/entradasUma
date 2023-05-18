@@ -6,12 +6,12 @@ import { Typography } from '@mui/material'
 function Home(props) {
   return (
     <div>
-      <ResponsiveAppBar></ResponsiveAppBar>
+      <ResponsiveAppBar setislogin={props.setislogin}></ResponsiveAppBar>
       <Typography sx={{
               fontFamily: 'monospace',
               fontWeight: 700,
-              color:"secondary.main",
-              letterSpacing: '.3rem',
+              color:"primary.main",
+              letterSpacing: '.1rem',
             }} variant="h2" >
         GENERAR ENTRADAS
       </Typography>
