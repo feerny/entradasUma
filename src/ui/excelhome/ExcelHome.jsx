@@ -28,6 +28,18 @@ export default function ExcelHome() {
   var objet1 = [];
   var objet2 = [];
   var objetFinal = [];
+
+  React.useEffect(() => {
+    setTimeout(() => {
+      if (open) {
+        if (errorFile.file1===false && errorFile.file2===false && errorFile.file3===false) {
+          setOpen(false)
+        }
+      }
+    }, 5000);
+    // eslint-disable-next-line
+  }, [open])
+  
   const handleFileUpload = async (event) => {
     setOpen(true);
     const file = await event.target.files[0];
@@ -60,6 +72,7 @@ export default function ExcelHome() {
       };
 
       reader.readAsArrayBuffer(file);
+      
     } else {
       seterrorFile({
         file1: true,
@@ -68,6 +81,7 @@ export default function ExcelHome() {
       });
     }
     setOpen(false);
+    console.log(objet1);
   };
   const handleFileUpload2 = async (event) => {
     setOpen(true);
@@ -101,11 +115,16 @@ export default function ExcelHome() {
     }
 
     setOpen(false);
+    console.log(objet2);
   };
 
   const clickGenerar = async (e) => {
     e.preventDefault();
+    console.log("------------------------------------");
+    console.log(objet1);
+    console.log(objet2);
     if (objet1.length > 0 && objet2.length > 0) {
+      console.log("entro bien");
       setOpen(true);
       var suma = 0;
       var promFecha = [];
@@ -151,6 +170,7 @@ export default function ExcelHome() {
       await XLSX.writeFile(newWorkbook, "Entradas.xlsx");
       setOpen(false);
     } else {
+      console.log("entro error");
       seterrorFile({
         file1: errorFile.file1,
         file2: errorFile.file2,
@@ -160,7 +180,7 @@ export default function ExcelHome() {
   };
 
   return (
-    <Box onSubmit={clickGenerar} component={"form"}>
+    <Box onSubmit={(e)=>clickGenerar(e)} component={"form"}>
       <Grid
         direction="row"
         justifyContent="center"
@@ -239,6 +259,7 @@ export default function ExcelHome() {
       </Grid>
 
       <Button
+      
         disabled={errorFile.file1 ? true : errorFile.file2 ? true : false}
         type="submit"
         sx={{ marginTop: "80px" }}
