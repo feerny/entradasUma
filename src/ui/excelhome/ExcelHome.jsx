@@ -105,7 +105,7 @@ export default function ExcelHome() {
 
   const clickGenerar = async (e) => {
     e.preventDefault();
-    if (objetFinal.length > 0) {
+    if (objet1objet1.length > 0 && objet2.length > 0) {
       setOpen(true);
       var suma = 0;
       var promFecha = [];
