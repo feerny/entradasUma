@@ -25,22 +25,27 @@ export default function ExcelHome() {
     file2: false,
     file3: false,
   });
-  var objet1 = [];
-  var objet2 = [];
+
+  const [objet1, setobjet1] = React.useState([]);
+  const [objet2, setobjet2] = React.useState([]);
   var objetFinal = [];
 
   React.useEffect(() => {
     setTimeout(() => {
       if (open) {
-        if (errorFile.file1===false && errorFile.file2===false && errorFile.file3===false) {
-          setOpen(false)
+        if (
+          errorFile.file1 === false &&
+          errorFile.file2 === false &&
+          errorFile.file3 === false
+        ) {
+          setOpen(false);
         }
       }
     }, 5000);
     // eslint-disable-next-line
-  }, [open])
-  
-  const handleFileUpload = async (event) => {
+  }, [open]);
+
+  const handleFileUpload = async(event) => {
     setOpen(true);
     const file = await event.target.files[0];
     if (
@@ -61,18 +66,20 @@ export default function ExcelHome() {
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
         jsonData.forEach((data) => {
-          objet1.push({
-            Proveedor: data[0],
-            DocumentoCompra: data[1],
-            Material: data[5],
-            textoBreve: data[6],
-            cantidadReparto: data[8],
-          });
+          setobjet1((prevArray) => [
+            ...prevArray,
+            {
+              Proveedor: data[0],
+              DocumentoCompra: data[1],
+              Material: data[5],
+              textoBreve: data[6],
+              cantidadReparto: data[8],
+            },
+          ]);
         });
       };
 
       reader.readAsArrayBuffer(file);
-      
     } else {
       seterrorFile({
         file1: true,
@@ -83,7 +90,7 @@ export default function ExcelHome() {
     setOpen(false);
     console.log(objet1);
   };
-  const handleFileUpload2 = async (event) => {
+  const handleFileUpload2 = async(event) => {
     setOpen(true);
     const file = await event.target.files[0];
     if (
@@ -100,12 +107,15 @@ export default function ExcelHome() {
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
         jsonData.forEach((data) => {
-          objet2.push({
-            Material: data[1],
-            Pedido: parseInt(data[11]),
-            cantidad: data[10],
-            fechaEntrada: data[16],
-          });
+          setobjet2((prevArray) => [
+            ...prevArray,
+            {
+              Material: data[1],
+              Pedido: parseInt(data[11]),
+              cantidad: data[10],
+              fechaEntrada: data[16],
+            },
+          ]);
         });
       };
 
@@ -118,30 +128,24 @@ export default function ExcelHome() {
     console.log(objet2);
   };
 
-  const clickGenerar = async (e) => {
+  const clickGenerar = (e) => {
     e.preventDefault();
-    console.log("------------------------------------");
-    console.log(objet1);
-    console.log(objet2);
     if (objet1.length > 0 && objet2.length > 0) {
-      console.log("entro bien");
       setOpen(true);
-      var suma = 0;
-      var promFecha = [];
-      objet1.forEach(async (data) => {
+      let suma = 0;
+      let promFecha = [];
+      objet1.forEach((data) => {
         const datafilter = objet2.filter(
-          async (data2) =>
-            (await data2.Material) === data.Material &&
+          (data2) =>
+            data2.Material === data.Material &&
             data2.Pedido === data.DocumentoCompra
         );
         datafilter.forEach((data4) => {
           promFecha.push(data4.fechaEntrada);
           suma = suma + data4.cantidad;
         });
-        async function getAverageAge(users) {
-          return (
-            (await users.reduce((prev, user) => prev + user, 0)) / users.length
-          );
+        function getAverageAge(users) {
+          return users.reduce((prev, user) => prev + user, 0) / users.length;
         }
 
         objetFinal.push({
@@ -163,12 +167,14 @@ export default function ExcelHome() {
         promFecha = [];
         suma = 0;
       });
-      await objetFinal.shift();
-      const newWorkbook = XLSX.utils.book_new();
-      const newWorksheet = XLSX.utils.json_to_sheet(objetFinal);
-      XLSX.utils.book_append_sheet(newWorkbook, newWorksheet, "Entradas");
-      await XLSX.writeFile(newWorkbook, "Entradas.xlsx");
-      setOpen(false);
+      setTimeout(() => {
+        objetFinal.shift();
+        const newWorkbook = XLSX.utils.book_new();
+        const newWorksheet = XLSX.utils.json_to_sheet(objetFinal);
+        XLSX.utils.book_append_sheet(newWorkbook, newWorksheet, "Entradas");
+        XLSX.writeFile(newWorkbook, "Entradas.xlsx");
+        setOpen(false);
+      }, 3000);
     } else {
       console.log("entro error");
       seterrorFile({
@@ -176,11 +182,12 @@ export default function ExcelHome() {
         file2: errorFile.file2,
         file3: true,
       });
+      setOpen(false);
     }
   };
 
   return (
-    <Box onSubmit={(e)=>clickGenerar(e)} component={"form"}>
+    <Box onSubmit={(e) => clickGenerar(e)} component={"form"}>
       <Grid
         direction="row"
         justifyContent="center"
@@ -259,14 +266,13 @@ export default function ExcelHome() {
       </Grid>
 
       <Button
-      
         disabled={errorFile.file1 ? true : errorFile.file2 ? true : false}
         type="submit"
         sx={{ marginTop: "80px" }}
         variant="contained"
         endIcon={<SendIcon />}
       >
-        Generar
+        GENERAR
       </Button>
       {errorFile.file3 ? (
         <Grid container justifyContent="center">
