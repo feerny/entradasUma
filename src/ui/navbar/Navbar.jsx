@@ -14,14 +14,20 @@ import MenuItem from '@mui/material/MenuItem';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import { useNavigate } from 'react-router-dom';
 
+//vistas para el nav
 const pages = ['Inicio', 'Como usar'];
+//opciones de setting de usuario
 const settings = ['Cuenta', 'Salir'];
 
+
 function ResponsiveAppBar(props) {
+  //declaro navigate para usarla
   let navigate = useNavigate();
+  //controladores para cerrar o mostrar los menus 
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
+  //funciones para control del menu y settings
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -33,6 +39,7 @@ function ResponsiveAppBar(props) {
     setAnchorElNav(null);
   };
 
+  //funcion para rediregir segun los parametros que se le pasen
   const clickMenu=(page)=>{
     handleCloseNavMenu()
     if (page==="Inicio") {
@@ -40,6 +47,7 @@ function ResponsiveAppBar(props) {
     }
   }
 
+  //funcion para ejecutar funcion segun la opcion de settings que se haya elegido 
   const clickMenuUser=(setting)=>{
     handleCloseUserMenu()
     if (setting==="Cuenta") {

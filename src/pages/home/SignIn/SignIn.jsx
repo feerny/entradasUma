@@ -23,40 +23,54 @@ import IconButton from "@mui/material/IconButton";
 
 
 export default function SignIn(props) {
+  //declaro navigate para su uso
   let navigate = useNavigate();
+  //declaro estados iniciales del usuario
   const [dataSesion, setdataSesion] = useState({
     email: "",
     password: "",
     chek: "not remenber",
   });
+  //controlo los mensajes de error
   const [messageError, setmessageError] = useState({ email: "", password: "" });
-
+  //funcion que se ejecuta al enviar el formulario
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(dataSesion);
+    //si el correo es correcto procede
     if (dataSesion.email === process.env.REACT_APP_EMAIL) {
+      //si la contraseña es correcta procede
       if (dataSesion.password === process.env.REACT_APP_PASSWORD) {
+        //si se eligio guardar sesion procede
         if (dataSesion.chek === "remember") {
+          //envia confirmacion de inicio de sesion
           props.setislogin(true);
+          //envio data a localStorage
           localStorage.setItem(
             "userValiSesion",
             `${process.env.REACT_APP_LOGINVALIDATION}`
           );
+          //redirijo a home
           setTimeout(() => navigate("home"), 200);
+          //si no desea guardar la sesion procede
         } else if (dataSesion.chek === "not remenber") {
+          //envia confirmacion de inicio de sesion
           props.setislogin(true);
+          //envia data a sessionStorage
           sessionStorage.setItem(
             "userValiSesion",
             `${process.env.REACT_APP_LOGINVALIDATION}`
           );
+          //redirije al home
           setTimeout(() => navigate("home"), 200);
         }
+        //si la congtraseña es incorrecta muestra mensaje de error
       } else {
         setmessageError({
           email: messageError.email,
           password: "contraseñaIncorrecta",
         });
       }
+      //si el correo es incorrecto muestra mensaje de error
     } else {
       setmessageError({
         email: "correo incorrecto",
@@ -64,8 +78,10 @@ export default function SignIn(props) {
       });
     }
   };
+  //controlador de estado para mostrar o no la contraseña
   const [showPassword, setShowPassword] = useState(false);
 
+  //funcion para mostrar y ocultar la contraseña
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event) => {
     event.preventDefault();

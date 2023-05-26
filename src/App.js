@@ -8,7 +8,7 @@ import Typography from "@mui/material/Typography";
 import Home from './pages/home/Home';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-
+//creacion de tema de la pagina 
 const theme = createTheme({
   palette: {
     primary: {
@@ -20,6 +20,7 @@ const theme = createTheme({
   },
 });
 
+//pie de la pagina con Copyright
 function Copyright(props) {
   return (
     <Typography
