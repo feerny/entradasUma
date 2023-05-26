@@ -1,7 +1,7 @@
 import './App.css';
+import { lazy, Suspense } from 'react';
 import SignIn from './pages/home/SignIn/SignIn';
 import { Navigate, Route, Routes, BrowserRouter } from 'react-router-dom';
-import NotFound from './pages/notFound/NotFound';
 import { useEffect, useState } from 'react';
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
@@ -38,6 +38,8 @@ function Copyright(props) {
     </Typography>
   );
 }
+const NotFound = lazy(() => import('./pages/notFound/NotFound'));
+
 function App() {
   //guarda la sesion
   const [islogin, setislogin] = useState(false)
@@ -52,15 +54,17 @@ function App() {
   return (
     <div className="App">
       <ThemeProvider theme={theme}>
-      <BrowserRouter>
-        <Routes>
-          <Route exact path="/" element={islogin === true ? <Navigate to="/home" /> : <SignIn setislogin={setislogin} Copyright={Copyright} />} />
-          <Route exact path="/home" element={islogin === true ? <Home setislogin={setislogin} Copyright={Copyright} /> : <Navigate to="/" />} />
-          <Route exact path="/notFound" element={<NotFound />} />
-          <Route path="*" element={<Navigate to="/notFound" />} />
-        </Routes>
-      </BrowserRouter>
-    </ThemeProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route exact path="/" element={islogin === true ? <Navigate to="/home" /> : <SignIn setislogin={setislogin} Copyright={Copyright} />} />
+            <Route exact path="/home" element={islogin === true ? <Home setislogin={setislogin} Copyright={Copyright} /> : <Navigate to="/" />} />
+            <Route exact path="/notFound" element={<Suspense fallback={<div>Loading...</div>}>
+              <NotFound />
+            </Suspense>} />
+            <Route path="*" element={<Navigate to="/notFound" />} />
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
     </div >
   );
 }
