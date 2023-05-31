@@ -1,11 +1,11 @@
 import './App.css';
 import { lazy, Suspense } from 'react';
-import SignIn from './pages/home/SignIn/SignIn';
+import SignIn from './pages/home/SignIn/SignIn.jsx';
 import { Navigate, Route, Routes, BrowserRouter } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
-import Home from './pages/home/Home';
+import Home from './pages/home/Home.jsx';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 //creacion de tema de la pagina 
@@ -38,7 +38,7 @@ function Copyright(props) {
     </Typography>
   );
 }
-const NotFound = lazy(() => import('./pages/notFound/NotFound'));
+const NotFound = lazy(() => import('./pages/notFound/NotFound.jsx'));
 
 function App() {
   //guarda la sesion

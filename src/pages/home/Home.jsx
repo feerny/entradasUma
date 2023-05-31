@@ -1,6 +1,6 @@
 import React from 'react'
-import ResponsiveAppBar from '../../ui/navbar/Navbar'
-import ExcelHome from '../../ui/excelhome/ExcelHome'
+import ResponsiveAppBar from '../../ui/navbar/Navbar.jsx'
+import ExcelHome from '../../ui/excelhome/ExcelHome.jsx'
 import { Typography } from '@mui/material'
 
 function Home(props) {
