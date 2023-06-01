@@ -12,20 +12,26 @@ import ModalUso from "../../components/modalUso/ModalUso.jsx";
 import CachedIcon from '@mui/icons-material/Cached';
 import { useTheme } from "@emotion/react";
 
+//genera animacion de slide para el dialog
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 function Home(props) {
+  //estado del paso para el modal
   const [activeStep, setActiveStep] = React.useState(0);
+  //llama al tema del aplicativo
   const theme = useTheme();
+  //estado del dialog para abrir y cerrar
   const [open, setOpen] = React.useState(false);
-
+  //funcion para abrir el dialog de modo de uso
   const handleClickOpen = () => {
+    //actualiza el estado
     setOpen(true);
   };
-
+  //funcion para cerrar el modal de modo de uso
   const handleClose = () => {
+    //actualiza el estado
     setOpen(false);
   };
   return (

@@ -13,6 +13,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Tooltip from "@mui/material/Tooltip";
 
+//data de cada paso
 const steps = [
   {
     label: "Paso 1",
@@ -73,32 +74,44 @@ const steps = [
 ];
 
 export default function ModalUso(props) {
+  //llama el tema de la app
   const theme = useTheme();
 
+  //estado del modal de la imagen
   const [open, setOpen] = React.useState(false);
+  //estado del hover de la imagen
   const [isHovered, setIsHovered] = React.useState(false);
 
+  //funcion que cambia el estado al paso siguiente
   const handleNext = () => {
+    //actualiza estado del paso al siguiente paso
     props.setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
-
+  //funcion que cambia el estado al paso anterior
   const handleBack = () => {
+    //actualiza estado del paso al anterior paso
     props.setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
-
+  //funcion para actualizar el estado del modal de la imagen
   const handleImageClick = () => {
+    //actualiza el estado del modal de la imagen
     setOpen(true);
   };
 
+  //funcion para actualizar el estado del modal de la imagen
   const handleClose = () => {
+    //actualiza el estado del modal de la imagen
     setOpen(false);
   };
 
+  //funcion para actualizar el estado del hover de la imagen
   const handleMouseEnter = () => {
+    //actualiza el estado del hover de la imagen a true
     setIsHovered(true);
   };
-
+  //funcion para actualizar el estado del hover de la imagen
   const handleMouseLeave = () => {
+    //actualiza el estado del hover de la imagen a false
     setIsHovered(false);
   };
 
