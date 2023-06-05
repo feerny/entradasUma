@@ -19,6 +19,10 @@ import * as XLSX from "xlsx";
 import PostAddIcon from "@mui/icons-material/PostAdd";
 
 export default function ExcelHome() {
+  //funcion para obtener el promedio de un arreglo de numeros
+  function getAverageAge(users) {
+    return users.reduce((prev, user) => prev + user, 0) / users.length;
+  }
   //manejo de estado para mostrar o no el spinner
   const [open, setOpen] = React.useState(false);
   //manejo de estado para los errores
@@ -48,12 +52,36 @@ export default function ExcelHome() {
     // eslint-disable-next-line
   }, [open]);
 
+  //funcion para obtener el numero que mas se repite de algun arreglo
+ async function obtenerNumeroMasRepetido(arr) {
+    // Objeto contador
+    let contador = {};
+
+    // Recorrer el arreglo y contar cada número
+    for (let num of arr) {
+      contador[num] = contador[num] ? contador[num] + 1 : 1;
+    }
+
+    let numeroMasRepetido;
+    let maxRepeticiones = 0;
+
+    // Encontrar el número con el contador más alto
+    for (let num in contador) {
+      if (contador[num] > maxRepeticiones) {
+        maxRepeticiones = contador[num];
+        numeroMasRepetido = num;
+      }
+    }
+
+    return numeroMasRepetido;
+  }
+
   //funcion para lectura del primer excel
   const handleFileUpload = async (event) => {
     //abre el sppiner
     setOpen(true);
     //espera a que lea el archivo
-    const file = await event.target.files[0];
+    const file = (await event.target.files[0]) || "notFile";
     //si es corecto entra de o contrario muestra mensaje de error
     if (
       file.type ===
@@ -108,7 +136,7 @@ export default function ExcelHome() {
     //manejo de estado para mostrar o no el spinner
     setOpen(true);
     //espera a leer el archivo
-    const file = await event.target.files[0];
+    const file = (await event.target.files[0]) || "notFile";
     //si el archivo es valido procede a ejecutar la funcion
     if (
       file.type ===
@@ -149,7 +177,7 @@ export default function ExcelHome() {
   };
 
   //funcion para generar el nuevo archivo
-  const clickGenerar = (e) => {
+  const clickGenerar = async (e) => {
     e.preventDefault();
     //si hay data en los dos nuevos objetos que cree procede
     if (objet1.length > 0 && objet2.length > 0) {
@@ -172,10 +200,6 @@ export default function ExcelHome() {
           promFecha.push(data4.fechaEntrada);
           suma = suma + data4.cantidad;
         });
-        //funcion para obtener el promedio
-        function getAverageAge(users) {
-          return users.reduce((prev, user) => prev + user, 0) / users.length;
-        }
         //agrego nueva data ya filtrada y calculada a nuevo arreglo de objetos
         objetFinal.push({
           Proveedor: data.Proveedor,
@@ -199,13 +223,32 @@ export default function ExcelHome() {
         promFecha = [];
         suma = 0;
       });
-      //ejecuto descarga del libro 3 segundos despues
-      setTimeout(() => {
-        objetFinal.shift();
+      objetFinal.shift();
+      var valiDatos = [];
+      objetFinal.forEach((data) => {
+        if (data.estado === "NO ENCONTRADO") {
+          valiDatos.push(1);
+        } else if(data.estado === "REVISAR" || data.estado==="OK") {
+          valiDatos.push(0);
+        }
+      });
+      const numberVali = await obtenerNumeroMasRepetido(valiDatos);
+      if (numberVali === "0") {
         const newWorkbook = XLSX.utils.book_new();
         const newWorksheet = XLSX.utils.json_to_sheet(objetFinal);
         XLSX.utils.book_append_sheet(newWorkbook, newWorksheet, "Entradas");
-        XLSX.writeFile(newWorkbook, "Entradas.xlsx");
+        await XLSX.writeFile(newWorkbook, "Entradas.xlsx");
+      } else {
+        //si no se encuentran mas de la mitad actualizo el estado a true
+        console.log("entro error");
+        seterrorFile({
+          file1: errorFile.file1,
+          file2: errorFile.file2,
+          file3: true,
+        });
+      }
+      //cierro el spinner 2 segundos despues para evitar interferecias
+      setTimeout(() => {
         setOpen(false);
       }, 3000);
     } else {
@@ -216,8 +259,10 @@ export default function ExcelHome() {
         file2: errorFile.file2,
         file3: true,
       });
-      //cierro el spinner
-      setOpen(false);
+      //cierro el spinner 3 segundos despues para evitar interferecias
+      setTimeout(() => {
+        setOpen(false);
+      }, 3000);
     }
   };
 
@@ -314,7 +359,7 @@ export default function ExcelHome() {
           <Grid item xs={12} sm={10} md={8} lg={6} sx={{ marginTop: "20px" }}>
             <Alert severity="error">
               <AlertTitle>Error</AlertTitle>
-              Archivos no coinciden con los solicitados —{" "}
+              Archivos no coinciden con los solicitados o no se encontraron mas de la mitad de los datos {" "}
               <strong>Subirlos como se indica en la guia de uso</strong>
             </Alert>
           </Grid>

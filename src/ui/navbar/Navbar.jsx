@@ -15,9 +15,9 @@ import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import { useNavigate } from "react-router-dom";
 
 //vistas para el nav
-const pages = ["Inicio", "Como usar"];
+const pages = [ "Como usar"];
 //opciones de setting de usuario
-const settings = ["Cuenta", "Salir"];
+const settings = [ "Salir"];
 
 function ResponsiveAppBar(props) {
   //declaro navigate para usarla
@@ -41,23 +41,18 @@ function ResponsiveAppBar(props) {
   //funcion para rediregir segun los parametros que se le pasen
   const clickMenu = (page) => {
     handleCloseNavMenu();
-    if (page === "Inicio") {
-      navigate("/home");
-    } else if (page === "Como usar") {
+
       props.handleClickOpen();
-    }
+    
   };
 
   //funcion para ejecutar funcion segun la opcion de settings que se haya elegido
   const clickMenuUser = (setting) => {
     handleCloseUserMenu();
-    if (setting === "Cuenta") {
-    } else if (setting === "Salir") {
       localStorage.clear();
       sessionStorage.clear();
       props.setislogin(false);
       navigate("/");
-    }
   };
 
   const handleCloseUserMenu = () => {
