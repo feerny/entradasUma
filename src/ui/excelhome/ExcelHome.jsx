@@ -53,7 +53,7 @@ export default function ExcelHome() {
   }, [open]);
 
   //funcion para obtener el numero que mas se repite de algun arreglo
- async function obtenerNumeroMasRepetido(arr) {
+  async function obtenerNumeroMasRepetido(arr) {
     // Objeto contador
     let contador = {};
 
@@ -228,7 +228,7 @@ export default function ExcelHome() {
       objetFinal.forEach((data) => {
         if (data.estado === "NO ENCONTRADO") {
           valiDatos.push(1);
-        } else if(data.estado === "REVISAR" || data.estado==="OK") {
+        } else if (data.estado === "REVISAR" || data.estado === "OK") {
           valiDatos.push(0);
         }
       });
@@ -238,6 +238,11 @@ export default function ExcelHome() {
         const newWorksheet = XLSX.utils.json_to_sheet(objetFinal);
         XLSX.utils.book_append_sheet(newWorkbook, newWorksheet, "Entradas");
         await XLSX.writeFile(newWorkbook, "Entradas.xlsx");
+        //cierro el spinner 2 segundos despues para evitar interferecias
+        setTimeout(() => {
+          setOpen(false);
+            window.location.reload();
+        }, 3000);
       } else {
         //si no se encuentran mas de la mitad actualizo el estado a true
         console.log("entro error");
@@ -246,11 +251,10 @@ export default function ExcelHome() {
           file2: errorFile.file2,
           file3: true,
         });
+        setTimeout(() => {
+          setOpen(false);
+        }, 3000);
       }
-      //cierro el spinner 2 segundos despues para evitar interferecias
-      setTimeout(() => {
-        setOpen(false);
-      }, 3000);
     } else {
       //si no hay data en alguno de los primeros objetos actualizo el estado a true
       console.log("entro error");
@@ -328,7 +332,7 @@ export default function ExcelHome() {
               <Input
                 onChange={handleFileUpload2}
                 type="file"
-                id="input-with-icon-adornment"
+                id="input-with-icon-adornment2"
                 startAdornment={
                   <InputAdornment position="start">
                     <PostAddIcon />
@@ -359,7 +363,8 @@ export default function ExcelHome() {
           <Grid item xs={12} sm={10} md={8} lg={6} sx={{ marginTop: "20px" }}>
             <Alert severity="error">
               <AlertTitle>Error</AlertTitle>
-              Archivos no coinciden con los solicitados o no se encontraron mas de la mitad de los datos {" "}
+              Archivos no coinciden con los solicitados o no se encontraron mas
+              de la mitad de los datos{" "}
               <strong>Subirlos como se indica en la guia de uso</strong>
             </Alert>
           </Grid>

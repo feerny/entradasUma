@@ -156,7 +156,7 @@ function ResponsiveAppBar(props) {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar style={{ filter: "brightness(0%) invert(100%)" }} alt="Remy Sharp" src="https://grupouma.com/colombia/wp-content/uploads/sites/2/2021/07/favicon.png" />
               </IconButton>
             </Tooltip>
             <Menu
