@@ -187,13 +187,6 @@ export default function SignIn(props) {
             >
               Ingresar
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Olvidaste la contraseña?
-                </Link>
-              </Grid>
-            </Grid>
           </Box>
         </Box>
         <props.Copyright sx={{ mt: 8, mb: 4 }} />
