@@ -52,30 +52,6 @@ export default function ExcelHome() {
     // eslint-disable-next-line
   }, [open]);
 
-  //funcion para obtener el numero que mas se repite de algun arreglo
-  async function obtenerNumeroMasRepetido(arr) {
-    // Objeto contador
-    let contador = {};
-
-    // Recorrer el arreglo y contar cada número
-    for (let num of arr) {
-      contador[num] = contador[num] ? contador[num] + 1 : 1;
-    }
-
-    let numeroMasRepetido;
-    let maxRepeticiones = 0;
-
-    // Encontrar el número con el contador más alto
-    for (let num in contador) {
-      if (contador[num] > maxRepeticiones) {
-        maxRepeticiones = contador[num];
-        numeroMasRepetido = num;
-      }
-    }
-
-    return numeroMasRepetido;
-  }
-
   //funcion para lectura del primer excel
   const handleFileUpload = async (event) => {
     //abre el sppiner
@@ -225,15 +201,15 @@ export default function ExcelHome() {
       });
       objetFinal.shift();
       var valiDatos = [];
-      objetFinal.forEach((data) => {
-        if (data.estado === "NO ENCONTRADO") {
-          valiDatos.push(1);
-        } else if (data.estado === "REVISAR" || data.estado === "OK") {
-          valiDatos.push(0);
-        }
-      });
-      const numberVali = await obtenerNumeroMasRepetido(valiDatos);
-      if (numberVali === "0") {
+      async function validatosfinales() {
+        objetFinal.forEach((data) => {
+          if (data.estado === "REVISAR" || data.estado === "OK") {
+            valiDatos.push(0);
+          }
+        });
+      }
+      await validatosfinales();
+      if (valiDatos.length > 0) {
         const newWorkbook = XLSX.utils.book_new();
         const newWorksheet = XLSX.utils.json_to_sheet(objetFinal);
         XLSX.utils.book_append_sheet(newWorkbook, newWorksheet, "Entradas");
@@ -241,7 +217,7 @@ export default function ExcelHome() {
         //cierro el spinner 2 segundos despues para evitar interferecias
         setTimeout(() => {
           setOpen(false);
-            window.location.reload();
+          window.location.reload();
         }, 3000);
       } else {
         //si no se encuentran mas de la mitad actualizo el estado a true
@@ -363,9 +339,8 @@ export default function ExcelHome() {
           <Grid item xs={12} sm={10} md={8} lg={6} sx={{ marginTop: "20px" }}>
             <Alert severity="error">
               <AlertTitle>Error</AlertTitle>
-              Archivos no coinciden con los solicitados o no se encontraron mas
-              de la mitad de los datos{" "}
-              <strong>Subirlos como se indica en la guia de uso</strong>
+              Archivos no coinciden con los solicitados o no se encontraron registros{" "}
+              <strong>||Subirlos como se indica en la guia de uso</strong>
             </Alert>
           </Grid>
         </Grid>
